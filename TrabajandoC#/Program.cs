@@ -31,26 +31,25 @@ Crear instancias de Estudiante y agregar cursos a cada estudiante.
 Agregar estos estudiantes a la lista en la clase GestorEstudiantes.
 Llamar al método MostrarEstudiantes() para mostrar la información de todos los estudiantes y los cursos en los que están inscritos.
 */
-
-using System;
-using System.Collections.Generic;
-
 class Curso
 {
-    public string nombre { get; set; }
-    public string codigoAlumno { get; set; }
-    public int creditosAlumno { get; set; }
+    public string nombre ;
+    public string codigo ;
+    public int creditos ;
 
-    public Curso(string nombre, string codigoAlumno, int creditosAlumno)
+    public Curso(string nombre, string codigo, int creditos)
     {
         this.nombre = nombre;
-        this.codigoAlumno = codigoAlumno;
-        this.creditosAlumno = creditosAlumno;
+        this.codigo = codigo;
+        this.creditos = creditos;
     }
 
-    public string MostrarDetalles() // Metodo que muestra los detalles del curso
+    public void MostrarDetalles() // Metodo que muestra los detalles del curso
     {
-        return $"Nombre: {nombre} , codigo: {codigoAlumno} , creditos alumno: {creditosAlumno}";
+        Console.WriteLine("DETALLES DEL CURSO: ");
+        Console.WriteLine($"Nombre del curso: {nombre}");
+        Console.WriteLine($"Codigo: {codigo}");
+        Console.WriteLine($"creditos: {creditos}");
     }
 }
 
@@ -59,7 +58,7 @@ class Estudiante
     public string nombre { get; set; }
     public string apellido { get; set; }
     public string matricula { get; set; }
-    public List<Curso> Cursos { get; set; }
+    public List<Curso> Cursos = new List<Curso>();
 
     // Constructor
     public Estudiante(string nombre, string apellido, string matricula)
@@ -67,52 +66,92 @@ class Estudiante
         this.nombre = nombre;
         this.apellido = apellido;
         this.matricula = matricula;
-        Cursos = new List<Curso>(); // Inicializa la lista de cursos
     }
 
-    // Metodo AgregarCurso
+    //agrega un curso a la lista cursos si el curso a agregar no se encuentra en la lista.
     public void AgregarCurso(Curso cursoAgregar)
     {
-        Cursos.Add(cursoAgregar);
+        if(BuscarEnLaLista(cursoAgregar) == null)
+        {
+            Cursos.Add(cursoAgregar);
+            Console.WriteLine($"el alumno {nombre} se a inscripto a el curso {cursoAgregar.nombre}");
+        }
+        else
+        {
+            Console.WriteLine($"el alumno {nombre} ya esta inscripto en el curso {cursoAgregar.nombre}");
+        }
     }
 
-    // Metodo para mostrar todos los cursos en los que esta inscrito el Estudiante actual.
-    public void MostrarCursos()
+    //busca un elemento tipo Curso dentro de la lista cursos , si lo encuentra lo devuelve si no devuelve null.
+    public Curso BuscarEnLaLista(Curso cursoABuscar)
     {
         foreach (var curso in Cursos)
         {
-            Console.WriteLine(curso.MostrarDetalles());
+            if(cursoABuscar == curso)
+            {
+                return curso;
+            }
+        }
+        return null;
+    }
+
+
+    //Metodo para mostrar todos los cursos en los que esta inscrito el Estudiante actual .
+    //en este metodo usaste Console.WriteLine(curso.MostrarDetalles()) pero solo tenes que mostrar los nombres.
+    //por la consigna que vi solo tenias que mostrar la lista completa de cursos(nombre de cursos) en los que esta inscripto un Estudiante(estudiante actual);
+    public void MostrarCursos()
+    {
+        Console.WriteLine($"LISTA DE CURSOS A LOS QUE ESTA INSCRIPTO {nombre}: ");
+        foreach (var curso in Cursos)
+        {
+            Console.WriteLine(curso.nombre);
         }
     }
 }
 
 class GestorDeEstudiantes
 {
-    public List<Estudiante> Estudiantes;
-
-    // Constructor
-    public GestorDeEstudiantes()
-    {
-        Estudiantes = new List<Estudiante>(); // Inicializa la lista de estudiantes
-    }
+    public List<Estudiante> Estudiantes = new List<Estudiante>();
 
     // Metodo Agregar estudiantes a una lista
-    public void AgregarEstudiantes(Estudiante estudianteAgregar)
+    public void AgregarEstudiante(Estudiante estudianteAgregar)
     {
-        Estudiantes.Add(estudianteAgregar);
+        if (BuscarEnLaLista(estudianteAgregar) == null)
+        {
+            Estudiantes.Add(estudianteAgregar);
+            Console.WriteLine($"se agrego el estudiante {estudianteAgregar.nombre} a la lista");
+        }
+        else
+        {
+            Console.WriteLine($"el estudiante {estudianteAgregar.nombre} ya esta en la lista");
+        }
     }
 
-    // Metodo para mostrar Estudiantes 
+    public Estudiante BuscarEnLaLista(Estudiante estudianteABuscar)
+    {
+        foreach (var estudiante in Estudiantes)
+        {
+            if(estudianteABuscar == estudiante)
+            {
+                return estudiante;
+            }
+        }
+        return null;
+    }
+
+
+    // Metodo para mostrar Estudiantes y los cursos en los que esta inscripto.
     public void MostrarEstudiantes()
     {
         foreach (var estudiante in Estudiantes) // Recorrer la lista de estudiantes
         {
-            Console.WriteLine($"{estudiante.nombre} {estudiante.apellido} ({estudiante.matricula})");
+            Console.WriteLine($"Nombre: {estudiante.nombre}, Apellido: {estudiante.apellido}, Matricula: {estudiante.matricula}");
             estudiante.MostrarCursos();
             Console.WriteLine(); // Línea en blanco para separar entre estudiantes
         }
     }
 }
+
 
 class Program
 {
