@@ -1,94 +1,151 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 /*
-Ejercicio 2: Sistema de Empleados (Herencia y Polimorfismo)
-Crea una clase base Empleado con:
+ Crear una clase Curso con las siguientes propiedades:
 
-Propiedades: nombre, apellido, salario.
-Método: CalcularSalario que retorne el salario.
-Crea una clase derivada EmpleadoPorHora que herede de Empleado y agregue una propiedad horasTrabajadas, y un método que calcule el salario basado en las horas trabajadas.
+Nombre (string)
+Codigo (string)
+Creditos (int)
+Y el siguiente método:
 
-Crea otra clase derivada EmpleadoFijo que calcule el salario con un bono fijo.
+MostrarDetalles(): Método que imprime los detalles del curso.
+Crear una clase Estudiante con las siguientes propiedades:
 
-En el método Main, crea instancias de ambas clases y muestra los salarios calculados.
+Nombre (string)
+Apellido (string)
+Matricula (string)
+Lista de cursos (List<Curso>) que representa los cursos en los que está inscrito el estudiante.
+Y los siguientes métodos:
+
+AgregarCurso(Curso curso): Para agregar un curso a la lista de cursos.
+MostrarCursos(): Para mostrar todos los cursos en los que está inscrito el estudiante.
+Crear una clase GestorEstudiantes que contenga:
+
+Una lista de estudiantes (List<Estudiante>).
+Método AgregarEstudiante(Estudiante estudiante): Para agregar estudiantes a la lista.
+Método MostrarEstudiantes(): Para mostrar todos los estudiantes y sus cursos inscritos.
+En el método Main:
+
+Crear instancias de Curso.
+Crear instancias de Estudiante y agregar cursos a cada estudiante.
+Agregar estos estudiantes a la lista en la clase GestorEstudiantes.
+Llamar al método MostrarEstudiantes() para mostrar la información de todos los estudiantes y los cursos en los que están inscritos.
 */
 
+using System;
+using System.Collections.Generic;
 
-
-public class Empleado
+class Curso
 {
-    public string Nombre { get; set; }
-    public string Apellido { get; set; }
-    public decimal Salario { get; set; }
+    public string nombre { get; set; }
+    public string codigoAlumno { get; set; }
+    public int creditosAlumno { get; set; }
 
-
-    // Constructor de la clase Empleado
-    public Empleado(string nombre, string apellido, decimal salario)
+    public Curso(string nombre, string codigoAlumno, int creditosAlumno)
     {
-        Nombre = nombre;
-        Apellido = apellido;
-        Salario = salario;
+        this.nombre = nombre;
+        this.codigoAlumno = codigoAlumno;
+        this.creditosAlumno = creditosAlumno;
     }
 
-
-    //Metodo calcular salario
-    public virtual decimal CalcularSalario() //Virtua- para poder hacerle modificaciones en lo que retorna este metodo 
+    public string MostrarDetalles() // Metodo que muestra los detalles del curso
     {
-        return Salario;
+        return $"Nombre: {nombre} , codigo: {codigoAlumno} , creditos alumno: {creditosAlumno}";
     }
 }
 
-
-class EmpleadoPorHora : Empleado
+class Estudiante
 {
-    public int HorasTrabajadas { get; set; }
+    public string nombre { get; set; }
+    public string apellido { get; set; }
+    public string matricula { get; set; }
+    public List<Curso> Cursos { get; set; }
 
-    public decimal TarifaPorHora { get; set; }
-
-    public EmpleadoPorHora(string nombre, string apellido, decimal tarifaPorHora, int horasTrabajadas)
-       : base(nombre, apellido, 0) //Como heredamos de la clase Empleado debemos llamar a sus propiedades , llamamos en 0 al salario del empleado para no generar conflicos.
+    // Constructor
+    public Estudiante(string nombre, string apellido, string matricula)
     {
-        TarifaPorHora = tarifaPorHora;
-        HorasTrabajadas = horasTrabajadas;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.matricula = matricula;
+        Cursos = new List<Curso>(); // Inicializa la lista de cursos
     }
 
-    public override decimal CalcularSalario() //Con el override aca estamos modificando a nuestro interes lo que devuelve esta funcion
+    // Metodo AgregarCurso
+    public void AgregarCurso(Curso cursoAgregar)
     {
-        return TarifaPorHora * HorasTrabajadas; //Esto que devuelve aca seria el valor de la propiedad Salario 
+        Cursos.Add(cursoAgregar);
+    }
+
+    // Metodo para mostrar todos los cursos en los que esta inscrito el Estudiante actual.
+    public void MostrarCursos()
+    {
+        foreach (var curso in Cursos)
+        {
+            Console.WriteLine(curso.MostrarDetalles());
+        }
     }
 }
 
-
-class EmpleadoFijo : Empleado
+class GestorDeEstudiantes
 {
-    public decimal BonoRecibido { get; set; }
+    public List<Estudiante> Estudiantes;
 
-
-    public EmpleadoFijo (string nombre , string apellido , decimal salario , decimal bonoRecibido) // En este caso recibiremos como parametro tambien un salario fijo y un bono
-    : base (nombre , apellido , salario) // Llamamos a las propiedades del empleado nombre , apellido , en este caso se recibe un salario en la clase anterior se pasa como parametro 0
-                                         // porque el salario corresponde a la cuenta tarifaHora * horas trabajadas , aqui recibimos un salario estatico.
+    // Constructor
+    public GestorDeEstudiantes()
     {
-        BonoRecibido = bonoRecibido;
+        Estudiantes = new List<Estudiante>(); // Inicializa la lista de estudiantes
     }
 
-
-    public override decimal CalcularSalario ()
+    // Metodo Agregar estudiantes a una lista
+    public void AgregarEstudiantes(Estudiante estudianteAgregar)
     {
-        return Salario + BonoRecibido;
+        Estudiantes.Add(estudianteAgregar);
+    }
+
+    // Metodo para mostrar Estudiantes 
+    public void MostrarEstudiantes()
+    {
+        foreach (var estudiante in Estudiantes) // Recorrer la lista de estudiantes
+        {
+            Console.WriteLine($"{estudiante.nombre} {estudiante.apellido} ({estudiante.matricula})");
+            estudiante.MostrarCursos();
+            Console.WriteLine(); // Línea en blanco para separar entre estudiantes
+        }
     }
 }
-
-
 
 class Program
 {
     static void Main(string[] args)
     {
-        EmpleadoPorHora empleadoPorHoraDavid = new EmpleadoPorHora("David", "Acosta", 500.60m, 2);
+        try
+        {
+            Curso cursoA = new Curso("CursoA2", "2345", 500);
+            Curso cursoB = new Curso("CursoAB", "5345", 400);
 
-        EmpleadoFijo empleadoFijoCarlos = new EmpleadoFijo("Carlos", "Gonzales", 100.50m, 50);
+            Estudiante David = new Estudiante("David", "Acosta", "4564");
+            David.AgregarCurso(cursoA);
+            David.AgregarCurso(cursoB);
 
-        Console.WriteLine(empleadoFijoCarlos.CalcularSalario());
+            Estudiante Carlos = new Estudiante("Carlos", "Rodriguez", "777");
+            Carlos.AgregarCurso(cursoA);
+
+            GestorDeEstudiantes listaA = new GestorDeEstudiantes();
+
+            listaA.AgregarEstudiantes(David);
+            listaA.AgregarEstudiantes(Carlos);
+
+            listaA.MostrarEstudiantes();
+        }
+        catch (Exception ex)
+        {
+            // Mostrar el mensaje de la excepción
+            Console.WriteLine($"Se produjo una excepción: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+            }
+        }
     }
 }
-
